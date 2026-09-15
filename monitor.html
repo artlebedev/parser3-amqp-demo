@@ -1,6 +1,7 @@
 @main[]
 $instance[^instanceId[]]
-^log[monitor.log;=== monitor $instance started, pid=$status:pid ===]
+$instanceLog[monitor.log]
+^log[=== monitor $instance started, pid=$status:pid ===]
 
 $oAmqp[^connectAmqp[]]
 ^declareQueue[$oAmqp;links]
@@ -10,14 +11,14 @@ $oAmqp[^connectAmqp[]]
 	^try{
 		^oAmqp.qos[$.prefetch_count(1)] ^rem{here as reconnect does not keep it}
 		^oAmqp.consume[
-			$.queue[$hQUEUES.links]
+			$.queue[links]
 			$.ack(true)
 			$.callback[$processTask]
 		]
-		^log[monitor.log;$instance consume loop exited normally, restarting]
+		^log[$instance consume loop exited normally, restarting]
 	}{
 		$exception.handled(true)
-		^log[monitor.log;$instance CONSUME ERROR: $exception.type: $exception.comment]
+		^log[$instance CONSUME ERROR: $exception.type: $exception.comment]
 	}
 }
 
@@ -28,7 +29,7 @@ $oAmqp[^connectAmqp[]]
 
 	^if($url eq BADACK){
 		^oAmqp.ack[$h.delivery_tag]
-		^log[monitor.log;$instance BADACK poison: acked tag $h.delivery_tag once, acking again on purpose]
+		^log[$instance BADACK poison: acked tag $h.delivery_tag once, acking again on purpose]
 		^oAmqp.ack[$h.delivery_tag]
 		^return[]
 	}
@@ -50,12 +51,12 @@ $oAmqp[^connectAmqp[]]
 		$.monitor[$instance]
 	]]
 
-	^oAmqp.publish[$jsonMsg; $.queue[$hQUEUES.metrics] ]
+	^oAmqp.publish[$jsonMsg; $.queue[metrics] ]
 
-	^log[monitor.log;$instance OK $url status=$info.response_code elapsed=${info.total_time}s]
+	^log[$instance OK $url status=$info.response_code elapsed=${info.total_time}s]
 	^oAmqp.ack[$h.delivery_tag]
 }{
 	$exception.handled(true)
-	^log[monitor.log;$instance FAIL $h.msg : $exception.type: $exception.comment]
+	^log[$instance FAIL $h.msg : $exception.type: $exception.comment]
 	^oAmqp.nack[$h.delivery_tag; $.requeue(false) ]
 }

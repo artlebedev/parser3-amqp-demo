@@ -1,15 +1,9 @@
-@auto[]
-$hQUEUES[
-	$.links[test_amqp_links]
-	$.metrics[test_amqp_metrics]
-]
-
-@log[file;comment][locals]
+@log[comment;file][locals]
 $v[$status:rusage]
 $now[^date::unix-timestamp($v.tv_sec)]
 $usec($v.tv_usec)
 $line[[^now.sql-string[].^usec.format[%06.0f]] $comment^#0A]
-^line.save[append;logs/$file]
+^line.save[append;logs/^if(def $file){$file}{$instanceLog}]
 $result[]
 
 @instanceId[]
@@ -18,9 +12,9 @@ $result[]
 @connectAmqp[]
 $result[^amqp::create[ $.auto_reconnect(5) ]]
 
-@declareQueue[oAmqp;sLogicalName]
+@declareQueue[oAmqp;sName]
 ^oAmqp.declare[
-	$.queue[$hQUEUES.[$sLogicalName]]
+	$.queue[$sName]
 	$.passive(false)
 	$.durable(true)
 	$.auto_delete(false)

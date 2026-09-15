@@ -1,6 +1,7 @@
 @main[]
 $instance[^instanceId[]]
-^log[alerter.log;=== alerter $instance started, pid=$status:pid ===]
+$instanceLog[alerter.log]
+^log[=== alerter $instance started, pid=$status:pid ===]
 
 $oAmqp[^connectAmqp[]]
 ^declareQueue[$oAmqp;metrics]
@@ -8,17 +9,17 @@ $oAmqp[^connectAmqp[]]
 ^while(1){
 	^try{
 		$batch[^oAmqp.consume[
-			$.queue[$hQUEUES.metrics]
+			$.queue[metrics]
 			$.ack(true)
 			$.count(-1)
 		]]
-		^log[alerter.log;$instance pulled ^batch.count[] metrics]
+		^log[$instance pulled ^batch.count[] metrics]
 		^batch.foreach[;h]{
 			^processMetric[$h]
 		}
 	}{
 		$exception.handled(true)
-		^log[alerter.log;$instance CONSUME ERROR: $exception.type: $exception.comment]
+		^log[$instance CONSUME ERROR: $exception.type: $exception.comment]
 	}
 	^sleep(3)
 }
@@ -26,11 +27,11 @@ $oAmqp[^connectAmqp[]]
 @processMetric[h]
 ^try{
 	$task[^json:parse[^taint[as-is][$h.msg]]]
-	^log[metrics.json;$h.msg]
-	^log[alerter.log;^instanceId[] wrote metric from monitor $task.monitor : $task.url status=$task.status]
+	^log[$h.msg;metrics.json]
+	^log[^instanceId[] wrote metric from monitor $task.monitor : $task.url status=$task.status]
 	^oAmqp.ack[$h.delivery_tag]
 }{
 	$exception.handled(true)
-	^log[alerter.log;^instanceId[] FAIL processing metric $h.msg : $exception.type: $exception.comment]
+	^log[^instanceId[] FAIL processing metric $h.msg : $exception.type: $exception.comment]
 	^oAmqp.nack[$h.delivery_tag; $.requeue(false)]
 }
