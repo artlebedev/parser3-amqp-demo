@@ -1,0 +1,27 @@
+[2026-09-15 17:39:57.921718] === alerter pid-59882 started, pid=59882 ===
+[2026-09-15 17:39:57.924826] pid-59882 pulled 0 metrics
+[2026-09-15 17:40:00.928822] pid-59882 pulled 5 metrics
+[2026-09-15 17:40:00.929053] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86900 status=200
+[2026-09-15 17:40:00.929165] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86901 status=200
+[2026-09-15 17:40:00.929305] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86902 status=200
+[2026-09-15 17:40:00.929436] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86903 status=200
+[2026-09-15 17:40:00.929542] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86904 status=200
+[2026-09-15 17:40:03.934570] pid-59882 pulled 7 metrics
+[2026-09-15 17:40:03.934724] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86905 status=200
+[2026-09-15 17:40:03.934854] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86906 status=200
+[2026-09-15 17:40:03.934950] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86907 status=200
+[2026-09-15 17:40:03.935034] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86908 status=200
+[2026-09-15 17:40:03.935141] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86909 status=200
+[2026-09-15 17:40:03.935247] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86910 status=200
+[2026-09-15 17:40:03.935349] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86911 status=200
+[2026-09-15 17:40:07.319961] pid-59882 CONSUME ERROR: amqp: failed: a socket error occurred
+[2026-09-15 17:40:15.329888] pid-59882 pulled 0 metrics
+[2026-09-15 17:40:18.334308] pid-59882 pulled 0 metrics
+[2026-09-15 17:40:21.371107] pid-59882 pulled 0 metrics
+[2026-09-15 17:40:24.374438] pid-59882 pulled 2 metrics
+[2026-09-15 17:40:24.374590] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86920 status=200
+[2026-09-15 17:40:24.374687] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86921 status=200
+[2026-09-15 17:40:27.378257] pid-59882 pulled 5 metrics
+[2026-09-15 17:40:27.378398] pid-59882 wrote metric from monitor instance1 : https://www.parser.ru/forum/?id=86923 status=200
+[2026-09-15 17:40:27.378490] pid-59882 wrote metric from monitor instance2 : https://www.parser.ru/forum/?id=86922 status=200
+...

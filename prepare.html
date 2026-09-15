@@ -1,0 +1,7 @@
+@main[]
+$oAmqp[^connectAmqp[]]
+^declareQueue[$oAmqp;links]
+^declareQueue[$oAmqp;metrics]
+$p1[^oAmqp.purge[$.queue[$hQUEUES.links]]]
+$p2[^oAmqp.purge[$.queue[$hQUEUES.metrics]]]
+purged links=$p1 metrics=$p2^#0A

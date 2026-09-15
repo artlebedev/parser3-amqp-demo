@@ -1,0 +1,195 @@
+@main[]
+$o[^amqp::create[]]
+
+^check[declare exchange type=direct]{
+	^o.declare[ $.exchange[claude_feat_direct] $.type[direct] $.durable(false) $.auto_delete(false) ]
+}
+
+^check[declare exchange type=fanout]{
+	^o.declare[ $.exchange[claude_feat_fanout] $.type[fanout] $.durable(false) $.auto_delete(true) ]
+}
+
+^check[declare queue with arguments]{
+	^o.declare[
+		$.queue[features_test]
+		$.durable(false)
+		$.auto_delete(false)
+		$.arguments[
+			$.x-message-ttl(60000)
+			$.x-max-length(1000)
+		]
+	]
+}
+
+^check[declare passive existing queue]{
+	^o.declare[ $.queue[features_test] $.passive(true) ]
+}
+
+^check[declare auto-generated queue name]{
+	$genName[^o.declare[ $.queue[] $.durable(false) $.auto_delete(true) $.exclusive(true) ]]
+	^if(!def $genName){^throw[assert;;no name returned]}
+}
+
+^check[bind]{
+	^o.bind[ $.exchange[claude_feat_direct] $.queue[features_test] $.routing_key[rk1] ]
+}
+
+^check[unbind]{
+	^o.unbind[ $.exchange[claude_feat_direct] $.queue[features_test] $.routing_key[rk1] ]
+	^o.bind[ $.exchange[claude_feat_direct] $.queue[features_test] $.routing_key[rk1] ]
+}
+
+$expected[
+	$.exchange[claude_feat_direct]
+	$.routing_key[rk1]
+	$.content_type[text/plain]
+	$.content_encoding[utf-8]
+	$.headers[
+		$.x-flag(true)
+		$.x-retry(1)
+		$.x-tag[hello]
+	]
+	$.delivery_mode(2)
+	$.priority(5)
+	$.correlation_id[corr-1]
+	$.reply_to[somewhere]
+	$.expiration[60000]
+	$.message_id[msg-1]
+	$.timestamp(1700000000)
+	$.type[test-message]
+	$.user_id[guest]
+	$.app_id[claude-features]
+]
+
+^check[publish with full properties+headers]{
+	^o.publish[payload;$expected]
+}
+
+^check[publish mandatory to unrouted key]{
+	^o.publish[unrouted; $.exchange[claude_feat_direct] $.routing_key[no-such-route] $.mandatory(true) ]
+}
+
+^check[consume pull default count=1, reads back routing_key/properties/headers]{
+	^rem{default timeout(0) is a strict non-blocking poll by design - a fresh subscribe needs a beat for the broker's push to land, so wait explicitly here}
+	$arr[^o.consume[ $.queue[features_test] $.ack(false) $.timeout(2) ]]
+	^if(^arr.count[]!=1){^throw[assert;;got ^arr.count[] messages]}
+	$m[$arr.0]
+	^rem{fields consume adds that aren't publish options, plus the two that change every run - drop them, everything else must match $expected exactly}
+	^m.delete[msg]
+	^m.delete[redelivered]
+	^m.delete[delivery_tag]
+	^m.delete[consumer_tag]
+	$got[^json:string[$m][ $.indent(true) ]]
+	$wanted[^json:string[$expected][ $.indent(true) ]]
+
+	^if($got ne $wanted){^throw[assert;;mismatch len=^got.length[] vs ^wanted.length[]^#0A---GOT---^#0A^taint[as-is;$got]^#0A---WANTED---^#0A^taint[as-is;$wanted]]}
+}
+
+^check[consume pull count=2 exact]{
+	^o.publish[m1; $.queue[features_test] ]
+	^o.publish[m2; $.queue[features_test] ]
+	^o.publish[m3; $.queue[features_test] ]
+	$arr[^o.consume[ $.queue[features_test] $.ack(false) $.count(2) $.timeout(2) ]]
+	^if(^arr.count[]!=2){^throw[assert;;got ^arr.count[] messages]}
+}
+
+^check[consume pull count=-1 drains remaining 1]{
+	$arr[^o.consume[ $.queue[features_test] $.ack(false) $.count(-1) $.timeout(0) ]]
+	^if(^arr.count[]!=1){^throw[assert;;got ^arr.count[] messages]}
+}
+
+^check[consume pull on empty queue returns empty, no exception]{
+	$arr[^o.consume[ $.queue[features_test] $.ack(false) $.count(-1) $.timeout(0) ]]
+	^if(^arr.count[]!=0){^throw[assert;;got ^arr.count[] messages]}
+}
+
+$listenCount(0)
+
+^check[consume listen count=2 limit via callback]{
+	^o.publish[a1; $.queue[features_test] ]
+	^o.publish[a2; $.queue[features_test] ]
+	^o.publish[a3; $.queue[features_test] ]
+	^o.consume[ $.queue[features_test] $.ack(true) $.callback[$featuresListenCb] $.count(2) ]
+	^if($listenCount!=2){^throw[assert;;processed $listenCount]}
+}
+
+^check[consume listen exits cleanly on idle timeout]{
+	^o.consume[ $.queue[features_test] $.ack(true) $.callback[$featuresListenCb] $.timeout(1) ]
+}
+
+^check[stop_consume from within callback]{
+	^o.publish[stopme; $.queue[features_test] ]
+	^o.consume[ $.queue[features_test] $.ack(true) $.callback[$featuresStopCb] ]
+}
+
+^check[nack requeue=true redelivers]{
+	^o.publish[nacktest; $.queue[features_test] ]
+	$arr[^o.consume[ $.queue[features_test] $.ack(true) $.timeout(2) ]]
+	^if(^arr.count[]!=1){^throw[assert;;got ^arr.count[] messages]}
+	^o.nack[$arr.0.delivery_tag; $.requeue(true)]
+	$arr2[^o.consume[ $.queue[features_test] $.ack(true) $.timeout(2) ]]
+	^if(^arr2.count[]!=1){^throw[assert;;got ^arr2.count[] messages back]}
+}
+
+^check[reject requeue=false]{
+	^o.publish[rejecttest; $.queue[features_test] ]
+	$arr[^o.consume[ $.queue[features_test] $.ack(true) $.timeout(2) ]]
+	^if(^arr.count[]!=1){^throw[assert;;got ^arr.count[] messages]}
+	^o.reject[$arr.0.delivery_tag; $.requeue(false)]
+}
+
+^check[qos prefetch_count]{
+	^o.qos[ $.prefetch_count(5) ]
+}
+
+^check[purge drains queue and returns count]{
+	^o.purge[ $.queue[features_test] ]
+	^o.publish[p1; $.queue[features_test] ]
+	^o.publish[p2; $.queue[features_test] ]
+	$purged[^o.purge[ $.queue[features_test] ]]
+	^if($purged!=2){^throw[assert;;got $purged]}
+}
+
+^check[info returns queue/messages/consumers]{
+	^o.publish[i1; $.queue[features_test] ]
+	^sleep(1)
+	$info[^o.info[ $.queue[features_test] ]]
+	^if($info.queue ne features_test || $info.messages!=1){^throw[assert;;queue=$info.queue messages=$info.messages]}
+	^o.purge[ $.queue[features_test] ]
+}
+
+^check[delete exchange]{
+	^o.delete[ $.exchange[claude_feat_fanout] ]
+}
+
+^check[delete queue + exchange]{
+	^o.delete[ $.queue[features_test] ]
+	^o.delete[ $.exchange[claude_feat_direct] ]
+}
+
+^check[release then use throws]{
+	^o.release[]
+	^try{
+		^o.declare[ $.queue[should_not_work] ]
+		^throw[assert;;did not throw after release]
+	}{
+		$exception.handled(true)
+	}
+}
+
+@check[name;jCode]
+^try{
+	$jCode
+	OK $name
+}{
+	$exception.handled(true)
+	FAIL $name - $exception.type: ^taint[as-is;$exception.comment]
+}
+
+@featuresListenCb[h]
+	$listenCount($listenCount+1)
+	^o.ack[$h.delivery_tag]
+
+@featuresStopCb[h]
+	^o.ack[$h.delivery_tag]
+	^o.stop_consume[]

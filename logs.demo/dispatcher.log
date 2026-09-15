@@ -1,0 +1,29 @@
+[2026-09-15 17:39:57.921703] === dispatcher instance1 started, pid=59879 ===
+[2026-09-15 17:39:57.924361] instance1 queued https://www.parser.ru/forum/?id=86900
+[2026-09-15 17:39:57.924444] instance1 queued https://www.parser.ru/forum/?id=86901
+[2026-09-15 17:39:57.924558] instance1 queued https://www.parser.ru/forum/?id=86902
+[2026-09-15 17:39:57.924652] instance1 queued https://www.parser.ru/forum/?id=86903
+[2026-09-15 17:39:57.924747] instance1 queued https://www.parser.ru/forum/?id=86904
+[2026-09-15 17:39:57.924826] instance1 queued https://www.parser.ru/forum/?id=86905
+[2026-09-15 17:39:57.924910] instance1 queued https://www.parser.ru/forum/?id=86906
+[2026-09-15 17:39:57.924982] instance1 queued https://www.parser.ru/forum/?id=86907
+[2026-09-15 17:39:57.925094] instance1 queued https://www.parser.ru/forum/?id=86908
+[2026-09-15 17:39:57.925171] instance1 queued https://www.parser.ru/forum/?id=86909
+[2026-09-15 17:39:57.925229] instance1 injected BADACK poison
+[2026-09-15 17:39:57.925359] instance1 queued https://www.parser.ru/forum/?id=86910
+[2026-09-15 17:39:57.925433] instance1 queued https://www.parser.ru/forum/?id=86911
+[2026-09-15 17:39:57.925505] instance1 queued https://www.parser.ru/forum/?id=86912
+[2026-09-15 17:39:57.925600] instance1 queued https://www.parser.ru/forum/?id=86913
+[2026-09-15 17:39:57.925680] instance1 queued https://www.parser.ru/forum/?id=86914
+[2026-09-15 17:39:57.925795] instance1 queued https://www.parser.ru/forum/?id=86915
+[2026-09-15 17:39:57.925890] instance1 queued https://www.parser.ru/forum/?id=86916
+[2026-09-15 17:39:57.925985] instance1 queued https://www.parser.ru/forum/?id=86917
+[2026-09-15 17:39:57.926074] instance1 queued https://www.parser.ru/forum/?id=86918
+[2026-09-15 17:39:57.926168] instance1 queued https://www.parser.ru/forum/?id=86919
+[2026-09-15 17:39:57.926209] instance1 sleep
+[2026-09-15 17:40:07.938462] instance1 ERROR amqp: publish failed: a socket error occurred
+[2026-09-15 17:40:07.938566] instance1 sleep
+[2026-09-15 17:40:22.966216] instance1 queued https://www.parser.ru/forum/?id=86920
+[2026-09-15 17:40:22.966348] instance1 queued https://www.parser.ru/forum/?id=86921
+[2026-09-15 17:40:22.966439] instance1 queued https://www.parser.ru/forum/?id=86922
+...

@@ -1,0 +1,30 @@
+@main[]
+$instance[^instanceId[]]
+^log[dispatcher.log;=== dispatcher $instance started, pid=$status:pid ===]
+
+$oAmqp[^connectAmqp[]]
+^declareQueue[$oAmqp;links]
+
+$id(86900)
+
+^while(1){
+	^try{
+		^while(1){
+			$url[https://www.parser.ru/forum/?id=$id]
+			$nowDate[^date::now[]]
+			^oAmqp.publish[^json:string[ $.url[$url] $.queued_at[^nowDate.sql-string[]] ]; $.queue[$hQUEUES.links] ]
+			^log[dispatcher.log;$instance queued $url]
+			$id($id+1)
+			^break($id%20==0)
+			^if($id%10==0){
+				^oAmqp.publish[{"url":"BADACK","queued_at":"poison"}; $.queue[$hQUEUES.links] ]
+				^log[dispatcher.log;$instance injected BADACK poison]
+			}
+		}
+	}{
+		$exception.handled(true)
+		^log[dispatcher.log;$instance ERROR $exception.type: $exception.comment]
+	}
+	^log[dispatcher.log;$instance sleep]
+	^sleep(10)
+}

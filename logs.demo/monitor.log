@@ -1,0 +1,35 @@
+[2026-09-15 17:39:57.921798] === monitor instance1 started, pid=59880 ===
+[2026-09-15 17:39:57.921801] === monitor instance2 started, pid=59881 ===
+[2026-09-15 17:39:58.790972] instance1 OK https://www.parser.ru/forum/?id=86900 status=200 elapsed=0.860142s
+[2026-09-15 17:39:59.305439] instance2 OK https://www.parser.ru/forum/?id=86901 status=200 elapsed=0.872928s
+[2026-09-15 17:39:59.634394] instance1 OK https://www.parser.ru/forum/?id=86902 status=200 elapsed=0.841553s
+[2026-09-15 17:40:00.111776] instance2 OK https://www.parser.ru/forum/?id=86903 status=200 elapsed=0.804607s
+[2026-09-15 17:40:00.458966] instance1 OK https://www.parser.ru/forum/?id=86904 status=200 elapsed=0.822956s
+[2026-09-15 17:40:00.936045] instance2 OK https://www.parser.ru/forum/?id=86905 status=200 elapsed=0.822574s
+[2026-09-15 17:40:01.337635] instance1 OK https://www.parser.ru/forum/?id=86906 status=200 elapsed=0.876782s
+[2026-09-15 17:40:01.772520] instance2 OK https://www.parser.ru/forum/?id=86907 status=200 elapsed=0.835111s
+[2026-09-15 17:40:02.138369] instance1 OK https://www.parser.ru/forum/?id=86908 status=200 elapsed=0.799164s
+[2026-09-15 17:40:02.138741] instance1 BADACK poison: acked tag 6 once, acking again on purpose
+[2026-09-15 17:40:02.139198] instance1 CONSUME ERROR: amqp: consume failed: PRECONDITION_FAILED - unknown delivery tag 6
+[2026-09-15 17:40:02.588936] instance2 OK https://www.parser.ru/forum/?id=86909 status=200 elapsed=0.814765s
+[2026-09-15 17:40:03.172394] instance1 OK https://www.parser.ru/forum/?id=86910 status=200 elapsed=1.030841s
+[2026-09-15 17:40:03.564159] instance2 OK https://www.parser.ru/forum/?id=86911 status=200 elapsed=0.973545s
+[2026-09-15 17:40:04.231938] instance1 OK https://www.parser.ru/forum/?id=86910 status=200 elapsed=1.058077s
+[2026-09-15 17:40:04.641118] instance2 FAIL {
+"url":"https:\/\/www.parser.ru\/forum\/?id=86910",
+"queued_at":"2026-09-15 17:39:57"
+} : amqp: publish failed: a socket error occurred
+[2026-09-15 17:40:05.244420] instance1 FAIL {
+"url":"https:\/\/www.parser.ru\/forum\/?id=86912",
+"queued_at":"2026-09-15 17:39:57"
+} : amqp: publish failed: a socket error occurred
+[2026-09-15 17:40:09.646350] instance2 CONSUME ERROR: amqp: open TCP socket failed: a socket error occurred
+[2026-09-15 17:40:10.321048] instance1 CONSUME ERROR: amqp: open TCP socket failed: a socket error occurred
+[2026-09-15 17:40:23.858560] instance2 OK https://www.parser.ru/forum/?id=86920 status=200 elapsed=0.890862s
+[2026-09-15 17:40:23.860749] instance1 OK https://www.parser.ru/forum/?id=86921 status=200 elapsed=0.892786s
+[2026-09-15 17:40:24.742210] instance1 OK https://www.parser.ru/forum/?id=86923 status=200 elapsed=0.879896s
+[2026-09-15 17:40:24.898546] instance2 OK https://www.parser.ru/forum/?id=86922 status=200 elapsed=1.03806s
+[2026-09-15 17:40:25.571991] instance1 OK https://www.parser.ru/forum/?id=86924 status=200 elapsed=0.828269s
+[2026-09-15 17:40:25.773706] instance2 OK https://www.parser.ru/forum/?id=86925 status=200 elapsed=0.873501s
+[2026-09-15 17:40:26.459262] instance1 OK https://www.parser.ru/forum/?id=86926 status=200 elapsed=0.885672s
+...
