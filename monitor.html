@@ -7,15 +7,30 @@ $oAmqp[^connectAmqp[]]
 ^declareQueue[$oAmqp;links]
 ^declareQueue[$oAmqp;metrics]
 
+# true - the broker pushes messages to the callback, false - the script pulls them with consume
+$callbackDemo(true)
+
 ^while(1){
 	^try{
 		^oAmqp.qos[$.prefetch_count(1)] ^rem{here as reconnect does not keep it}
-		^oAmqp.consume[
-			$.queue[links]
-			$.ack(true)
-			$.callback[$processTask]
-		]
-		^log[$instance consume loop exited normally, restarting]
+		^if($callbackDemo){
+			^oAmqp.consume[
+				$.queue[links]
+				$.ack(true)
+				$.callback[$processTask]
+				$.timeout(3600)
+			]
+			^log[$instance consume loop exited normally (stop_consume or timeout), restarting]
+		}{
+			$batch[^oAmqp.consume[
+				$.queue[links]
+				$.ack(true)
+				$.timeout(3600)
+			]]
+			^batch.foreach[;h]{
+				^processTask[$h]
+			}
+		}
 	}{
 		$exception.handled(true)
 		^log[$instance CONSUME ERROR: $exception.type: $exception.comment]
